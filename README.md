@@ -8,7 +8,7 @@ The API is documented using the OpenAPI 3.1.0 specification. You can find the fu
 
 ### Base URL 
 ```
-https://karma-gpt.vercel.app/api
+https://api.karmasaur.com
 ```
 
 ### Available Endpoints
@@ -55,3 +55,8 @@ To view the API documentation in a more readable format, you can:
 ## Using with GPT
 
 This API is designed to be easily consumed by GPT models. The OpenAPI specification provides all the necessary information for GPT to understand the available endpoints and their response formats.
+
+### Reddit Notation Support
+The API understands both standard Reddit notation and plain text:
+- Subreddits: both `r/subreddit` and `subreddit` formats
+- Users: both `u/username` and `username` formats
