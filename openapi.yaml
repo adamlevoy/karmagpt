@@ -1,0 +1,447 @@
+openapi: 3.1.0
+info:
+  title: KarmaGPT API
+  description: Middleware API for fetching subreddit, user, and moderator data from Reddit.
+  version: 1.3.0
+servers:
+  - url: https://api.karmasaur.com
+    description: Production server for Karma-GPT middleware
+paths:
+  /subreddit/{subreddit}:
+    get:
+      operationId: getSubredditData
+      summary: Fetch data for a specific subreddit.
+      description: Retrieves subreddit data via the Karma-GPT middleware.
+      parameters:
+        - name: subreddit
+          in: path
+          required: true
+          description: The name of the subreddit to fetch data for.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Subreddit data retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the subreddit.
+                  title:
+                    type: string
+                    description: Title of the subreddit.
+                  description:
+                    type: string
+                    description: Description of the subreddit.
+                  subscribers:
+                    type: integer
+                    description: Number of subscribers in the subreddit.
+                  active_users:
+                    type: integer
+                    description: Number of active users in the subreddit.
+        "404":
+          description: Subreddit not found.
+        "500":
+          description: Internal server error.
+
+  /subreddit/{subreddit}/posts:
+    get:
+      operationId: getSubredditPosts
+      summary: Fetch recent posts from a subreddit.
+      description: Retrieves the most recent posts from a specific subreddit.
+      parameters:
+        - name: subreddit
+          in: path
+          required: true
+          description: The name of the subreddit to fetch recent posts from.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Recent posts retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    post_id:
+                      type: string
+                      description: ID of the post.
+                    title:
+                      type: string
+                      description: Title of the post.
+                    content:
+                      type: string
+                      description: Content of the post.
+                    author:
+                      type: string
+                      description: Username of the author of the post.
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: The creation timestamp of the post.
+                    upvotes:
+                      type: integer
+                      description: Number of upvotes the post received.
+                    comments_count:
+                      type: integer
+                      description: Number of comments on the post.
+        "404":
+          description: Subreddit or posts not found.
+        "500":
+          description: Internal server error.
+
+  /subreddit/{subreddit}/rules:
+    get:
+      operationId: getSubredditRules
+      summary: Fetch rules for a subreddit.
+      description: Retrieves the rules for a specific subreddit.
+      parameters:
+        - name: subreddit
+          in: path
+          required: true
+          description: The name of the subreddit to fetch rules for.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Rules retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rules:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        short_name:
+                          type: string
+                          description: Short name or title of the rule.
+                        description:
+                          type: string
+                          description: Detailed description of the rule.
+                        created_utc:
+                          type: number
+                          description: Timestamp when the rule was created.
+        "404":
+          description: Subreddit or rules not found.
+        "500":
+          description: Internal server error.
+
+  /subreddit/{subreddit}/moderators:
+    get:
+      operationId: getSubredditModerators
+      summary: Fetch the list of moderators for a subreddit.
+      description: Retrieves the list of moderators for a specific subreddit.
+      parameters:
+        - name: subreddit
+          in: path
+          required: true
+          description: The name of the subreddit to fetch moderators for.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Moderator list retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    username:
+                      type: string
+                      description: Reddit username of the moderator.
+                    role:
+                      type: string
+                      description: Role of the moderator (e.g., `moderator`, `administrator`).
+                    permissions:
+                      type: array
+                      items:
+                        type: string
+                      description: List of permissions granted to the moderator.
+        "404":
+          description: Subreddit or moderators not found.
+        "500":
+          description: Internal server error.
+
+  /user/{username}:
+    get:
+      operationId: getUserData
+      summary: Fetch data for a specific Reddit user.
+      description: Retrieves data about a specific Reddit user.
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: The Reddit username to fetch data for.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User data retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    description: Reddit username.
+                  karma:
+                    type: integer
+                    description: Total karma of the user.
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: The account creation timestamp.
+                  post_karma:
+                    type: integer
+                    description: Karma earned from posts.
+                  comment_karma:
+                    type: integer
+                    description: Karma earned from comments.
+        "404":
+          description: User not found.
+        "500":
+          description: Internal server error.
+
+  /user/{username}/posts:
+    get:
+      operationId: getUserPosts
+      summary: Fetch posts from a specific user.
+      description: Retrieves the most recent posts from a specific Reddit user.
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: The Reddit username to fetch posts from.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User posts retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    post_id:
+                      type: string
+                      description: ID of the post.
+                    title:
+                      type: string
+                      description: Title of the post.
+                    content:
+                      type: string
+                      description: Content of the post.
+                    subreddit:
+                      type: string
+                      description: Subreddit where the post was made.
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: The creation timestamp of the post.
+                    upvotes:
+                      type: integer
+                      description: Number of upvotes the post received.
+        "404":
+          description: User or posts not found.
+        "500":
+          description: Internal server error.
+
+  /user/{username}/comments:
+    get:
+      operationId: getUserComments
+      summary: Fetch comments from a specific user.
+      description: Retrieves the most recent comments from a specific Reddit user.
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: The Reddit username to fetch comments from.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User comments retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    comment_id:
+                      type: string
+                      description: ID of the comment.
+                    content:
+                      type: string
+                      description: Content of the comment.
+                    subreddit:
+                      type: string
+                      description: Subreddit where the comment was made.
+                    post_id:
+                      type: string
+                      description: ID of the post the comment belongs to.
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: The creation timestamp of the comment.
+                    upvotes:
+                      type: integer
+                      description: Number of upvotes the comment received.
+        "404":
+          description: User or comments not found.
+        "500":
+          description: Internal server error.
+
+  /subreddit/{subreddit}/hot:
+    get:
+      operationId: getSubredditHotPosts
+      summary: Fetch hot posts from a subreddit.
+      description: Retrieves the hot posts from a specific subreddit.
+      parameters:
+        - name: subreddit
+          in: path
+          required: true
+          description: The name of the subreddit to fetch hot posts from.
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: '#/components/responses/PostsList'
+        "404":
+          description: Subreddit not found.
+        "500":
+          description: Internal server error.
+
+  /subreddit/{subreddit}/rising:
+    get:
+      operationId: getSubredditRisingPosts
+      summary: Fetch rising posts from a subreddit.
+      description: Retrieves the rising posts from a specific subreddit.
+      parameters:
+        - name: subreddit
+          in: path
+          required: true
+          description: The name of the subreddit to fetch rising posts from.
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: '#/components/responses/PostsList'
+        "404":
+          description: Subreddit not found.
+        "500":
+          description: Internal server error.
+
+  /subreddit/{subreddit}/controversial:
+    get:
+      operationId: getSubredditControversialPosts
+      summary: Fetch controversial posts from a subreddit.
+      description: Retrieves the controversial posts from a specific subreddit.
+      parameters:
+        - name: subreddit
+          in: path
+          required: true
+          description: The name of the subreddit to fetch controversial posts from.
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: '#/components/responses/PostsList'
+        "404":
+          description: Subreddit not found.
+        "500":
+          description: Internal server error.
+
+  /subreddit/{subreddit}/top:
+    get:
+      operationId: getSubredditTopPosts
+      summary: Fetch top posts from a subreddit.
+      description: Retrieves the top posts from a specific subreddit.
+      parameters:
+        - name: subreddit
+          in: path
+          required: true
+          description: The name of the subreddit to fetch top posts from.
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: '#/components/responses/PostsList'
+        "404":
+          description: Subreddit not found.
+        "500":
+          description: Internal server error.
+
+  /subreddits/popular:
+    get:
+      operationId: getPopularSubreddits
+      summary: Fetch popular subreddits.
+      description: Retrieves a list of popular subreddits.
+      responses:
+        "200":
+          description: Popular subreddits retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subreddit'
+        "500":
+          description: Internal server error.
+
+  /subreddits/new:
+    get:
+      operationId: getNewSubreddits
+      summary: Fetch new subreddits.
+      description: Retrieves a list of newly created subreddits.
+      responses:
+        "200":
+          description: New subreddits retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subreddit'
+        "500":
+          description: Internal server error.
+
+  /subreddits/search:
+    get:
+      operationId: searchSubreddits
+      summary: Search for subreddits.
+      description: Search for subreddits by query string.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: The search query string.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Search results retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subreddit'
+        "400":
+          description: Missing search query.
+        "500":
+          description: Internal server error. 

@@ -42,6 +42,86 @@ router.get('/subreddit/:name/moderators', async (req, res, next) => {
   }
 });
 
+// Add these new endpoints for different post sorting methods
+router.get('/subreddit/:name/hot', async (req, res, next) => {
+  try {
+    const posts = await redditClient
+      .getSubreddit(req.params.name)
+      .getHot({ limit: 25 });
+    res.json(posts);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/subreddit/:name/rising', async (req, res, next) => {
+  try {
+    const posts = await redditClient
+      .getSubreddit(req.params.name)
+      .getRising({ limit: 25 });
+    res.json(posts);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/subreddit/:name/controversial', async (req, res, next) => {
+  try {
+    const posts = await redditClient
+      .getSubreddit(req.params.name)
+      .getControversial({ limit: 25 });
+    res.json(posts);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/subreddit/:name/top', async (req, res, next) => {
+  try {
+    const posts = await redditClient
+      .getSubreddit(req.params.name)
+      .getTop({ limit: 25 });
+    res.json(posts);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Add these new endpoints for subreddit discovery
+router.get('/subreddits/popular', async (req, res, next) => {
+  try {
+    const subreddits = await redditClient.getPopularSubreddits({ limit: 25 });
+    res.json(subreddits);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/subreddits/new', async (req, res, next) => {
+  try {
+    const subreddits = await redditClient.getNewSubreddits({ limit: 25 });
+    res.json(subreddits);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/subreddits/search', async (req, res, next) => {
+  try {
+    const query = req.query.q;
+    if (!query) {
+      return res.status(400).json({ error: 'Search query is required' });
+    }
+    const results = await redditClient.searchSubreddits({
+      query,
+      limit: 25
+    });
+    res.json(results);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // User endpoints
 router.get('/user/:username', async (req, res, next) => {
   try {
