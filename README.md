@@ -8,7 +8,7 @@ The API is documented using the OpenAPI 3.1.0 specification. You can find the fu
 
 ### Base URL 
 ```
-https://api.karmasaur.com
+https://api.karmasaur.com/api
 ```
 
 ### Available Endpoints
