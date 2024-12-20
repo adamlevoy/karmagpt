@@ -32,6 +32,16 @@ router.get('/subreddit/:name/rules', async (req, res, next) => {
   }
 });
 
+router.get('/subreddit/:name/moderators', async (req, res, next) => {
+  try {
+    const subreddit = await redditClient.getSubreddit(req.params.name);
+    const moderators = await subreddit.getModerators();
+    res.json(moderators);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // User endpoints
 router.get('/user/:username', async (req, res, next) => {
   try {
